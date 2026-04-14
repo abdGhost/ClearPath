@@ -1,0 +1,186 @@
+{
+  "users": {
+    "test_device_summary": {
+      "last_relapse_date": "2026-03-31T06:20:54.035000Z",
+      "version": 10,
+      "updated_at": "2026-04-14T07:22:07.754735Z",
+      "resist_count": 29,
+      "onboarding_completed": false,
+      "goal_type": "quit",
+      "quit_reason": "",
+      "trigger_profile": [],
+      "milestone_days": 30,
+      "preferred_currency": "auto",
+      "daily_spend": 12.5,
+      "daily_hours": 1.5,
+      "trigger_log": [
+        "Social",
+        "Boredom",
+        "Stress",
+        "Boredom",
+        "Social",
+        "Stress",
+        "Social",
+        "Boredom",
+        "Stress",
+        "Social",
+        "Stress"
+      ],
+      "crave_sessions": [
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-03-31T08:58:33.520600+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-03-31T08:58:33.550766+00:00"
+        },
+        {
+          "mode": "distraction_task",
+          "helped": true,
+          "at": "2026-03-31T08:58:33.580598+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-11T06:06:26.648315+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-04-11T06:06:26.671956+00:00"
+        },
+        {
+          "mode": "distraction_task",
+          "helped": true,
+          "at": "2026-04-11T06:06:26.697887+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-14T07:22:07.717958+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-04-14T07:22:07.737904+00:00"
+        },
+        {
+          "mode": "distraction_task",
+          "helped": true,
+          "at": "2026-04-14T07:22:07.754692+00:00"
+        }
+      ],
+      "heatmap_week": [
+        2,
+        4,
+        1,
+        4,
+        2,
+        0,
+        3
+      ],
+      "last_mood_logged_at": null,
+      "last_resist_at": null,
+      "device_id": "test_device_summary",
+      "display_name": "Tester"
+    },
+    "test_device_conflict": {
+      "last_relapse_date": "2026-03-29T01:58:33.616711Z",
+      "version": 4,
+      "updated_at": "2026-04-14T07:22:07.837810Z",
+      "resist_count": 0,
+      "onboarding_completed": false,
+      "goal_type": "quit",
+      "quit_reason": "",
+      "trigger_profile": [],
+      "milestone_days": 30,
+      "preferred_currency": "auto",
+      "daily_spend": 20.0,
+      "daily_hours": 2.0,
+      "trigger_log": [],
+      "crave_sessions": [],
+      "heatmap_week": [
+        2,
+        3,
+        1,
+        4,
+        2,
+        0,
+        3
+      ],
+      "last_mood_logged_at": null,
+      "last_resist_at": null,
+      "device_id": "test_device_conflict",
+      "display_name": "Tester"
+    },
+    "web_bc40f98": {
+      "last_relapse_date": "2026-04-08T22:40:47.888478Z",
+      "version": 7,
+      "updated_at": "2026-04-14T07:13:43.467038Z",
+      "resist_count": 1,
+      "onboarding_completed": true,
+      "goal_type": "quit",
+      "quit_reason": "",
+      "trigger_profile": [
+        "Boredom"
+      ],
+      "milestone_days": 30,
+      "preferred_currency": "INR",
+      "daily_spend": 12.5,
+      "daily_hours": 1.5,
+      "trigger_log": [],
+      "crave_sessions": [],
+      "heatmap_week": [
+        2,
+        4,
+        1,
+        4,
+        2,
+        0,
+        3
+      ],
+      "last_mood_logged_at": null,
+      "last_resist_at": "2026-04-14T07:13:43.466961Z",
+      "device_id": "web_bc40f98",
+      "display_name": "Steady Oak #0725"
+    },
+    "test_device_weekly": {
+      "last_relapse_date": "2026-04-14T07:22:07.780055Z",
+      "version": 3,
+      "updated_at": "2026-04-14T07:22:07.803345Z",
+      "resist_count": 1,
+      "onboarding_completed": false,
+      "goal_type": "quit",
+      "quit_reason": "",
+      "trigger_profile": [],
+      "milestone_days": 30,
+      "preferred_currency": "auto",
+      "daily_spend": 12.5,
+      "daily_hours": 1.5,
+      "trigger_log": [],
+      "crave_sessions": [
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-13T08:00:00+00:00"
+        }
+      ],
+      "heatmap_week": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "last_mood_logged_at": null,
+      "last_resist_at": "2026-04-14T07:22:07.803293Z",
+      "device_id": "test_device_weekly",
+      "display_name": "Tester"
+    }
+  }
+}
