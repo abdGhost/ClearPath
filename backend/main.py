@@ -16,6 +16,8 @@ STATE_PATH = Path(__file__).resolve().parent / "habit_state.json"
 STATE_LOCK = Lock()
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 STORAGE_MODE = "postgres" if DATABASE_URL else "json"
+ALLOWED_ORIGINS_RAW = os.getenv("ALLOWED_ORIGINS", "").strip()
+CORS_ORIGINS = [o.strip() for o in ALLOWED_ORIGINS_RAW.split(",") if o.strip()] or ["*"]
 
 
 class HabitState(BaseModel):
@@ -415,11 +417,16 @@ def build_weekly_activity(s: DeviceHabitState) -> WeeklyActivity:
 app = FastAPI(title="Haptive API", version="0.2.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/")
+def root() -> dict[str, str]:
+    return {"name": "ClearPath API", "status": "ok"}
 
 
 @app.get("/health")

@@ -1,14 +1,22 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../state/habit_store.dart';
 
 /// Optional sync with the FastAPI backend (`backend/main.py`).
 class HabitApi {
-  HabitApi({this.baseUrl = 'http://127.0.0.1:8000'});
+  HabitApi({String? baseUrl}) : baseUrl = baseUrl ?? _defaultBaseUrl();
 
   final String baseUrl;
+
+  static String _defaultBaseUrl() {
+    const fromDefine = String.fromEnvironment('API_BASE_URL');
+    if (fromDefine.isNotEmpty) return fromDefine;
+    // Keep localhost for local debug, use hosted API for release by default.
+    return kReleaseMode ? 'https://clearpath-1.onrender.com' : 'http://127.0.0.1:8000';
+  }
 
   Uri _u(String path) => Uri.parse('$baseUrl$path');
   Map<String, String> _identityQuery(HabitStore store) => {

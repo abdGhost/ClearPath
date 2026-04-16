@@ -136,6 +136,8 @@ If creating manually, use:
 - Health check path: `/health`
 - Environment variable:
   - `DATABASE_URL` = your Render Postgres connection string
+  - `ALLOWED_ORIGINS` = comma-separated allowed frontend origins (recommended in production), e.g.
+    - `https://clearpath-1.onrender.com,https://your-frontend-domain.com`
 
 ### Post-deploy check
 
@@ -144,4 +146,19 @@ Open:
 
 Expected:
 - `{"status":"ok","storage":"postgres"}`
+
+Root endpoint:
+- `GET /` returns `{"name":"ClearPath API","status":"ok"}`
+
+## Flutter API base URL
+
+`HabitApi` defaults:
+- Debug/profile: `http://127.0.0.1:8000`
+- Release: `https://clearpath-1.onrender.com`
+
+Override at build/run time with:
+
+```bash
+flutter run --dart-define=API_BASE_URL=https://clearpath-1.onrender.com
+```
 
