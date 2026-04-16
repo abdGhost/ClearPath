@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../services/habit_api.dart';
 import '../state/habit_store.dart';
 import '../theme/haptive_theme.dart';
+import '../widgets/sync_status_badge.dart';
 
 /// Analytics — card-grouped layout, weekday bar chart, trigger mix (common in habit / health apps).
 class AnalyticsScreen extends StatefulWidget {
@@ -120,14 +121,24 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 height: 1.1,
               ),
             ),
-            Text(
-              'Weekly rhythm · trigger mix',
-              style: text.labelSmall?.copyWith(
-                color: HaptiveColors.label.withValues(alpha: 0.9),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.1,
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Weekly rhythm · trigger mix',
+                  style: text.labelSmall?.copyWith(
+                    color: HaptiveColors.label.withValues(alpha: 0.9),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.1,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                SyncStatusBadge(
+                  syncing: store.isSyncing,
+                  label: store.syncStatusMessage,
+                ),
+              ],
             ),
           ],
         ),

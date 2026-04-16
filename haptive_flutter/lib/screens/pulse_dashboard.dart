@@ -7,6 +7,7 @@ import '../services/habit_api.dart';
 import '../state/habit_store.dart';
 import '../theme/haptive_theme.dart';
 import '../widgets/pulse_typography_home.dart';
+import '../widgets/sync_status_badge.dart';
 import 'intervention_overlay.dart';
 
 /// Pulse home — minimal typography + ring hero (trend in dark habit apps).
@@ -160,14 +161,24 @@ class _PulseDashboardState extends State<PulseDashboard>
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(24, 10, 24, 132),
                 children: [
-                  Text(
-                    _formatDate(now).toUpperCase(),
-                    style: text.labelSmall?.copyWith(
-                      color: HaptiveColors.label.withValues(alpha: 0.9),
-                      fontSize: 11,
-                      letterSpacing: 1.4,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _formatDate(now).toUpperCase(),
+                          style: text.labelSmall?.copyWith(
+                            color: HaptiveColors.label.withValues(alpha: 0.9),
+                            fontSize: 11,
+                            letterSpacing: 1.4,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SyncStatusBadge(
+                        syncing: store.isSyncing,
+                        label: store.syncStatusMessage,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   Text(

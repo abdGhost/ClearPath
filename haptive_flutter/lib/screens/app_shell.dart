@@ -7,6 +7,7 @@ import '../services/habit_api.dart';
 import '../state/habit_store.dart';
 import '../theme/haptive_theme.dart';
 import '../utils/currency_format.dart';
+import '../widgets/sync_status_badge.dart';
 import 'analytics_screen.dart';
 import 'pulse_dashboard.dart';
 
@@ -446,6 +447,14 @@ class _MoreTab extends StatelessWidget {
                   color: HaptiveColors.label.withValues(alpha: 0.92),
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: SyncStatusBadge(
+                  syncing: store.isSyncing,
+                  label: store.syncStatusMessage,
                 ),
               ),
               const SizedBox(height: 20),

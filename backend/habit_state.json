@@ -2,8 +2,8 @@
   "users": {
     "test_device_summary": {
       "last_relapse_date": "2026-03-31T06:20:54.035000Z",
-      "version": 10,
-      "updated_at": "2026-04-14T07:22:07.754735Z",
+      "version": 25,
+      "updated_at": "2026-04-16T06:09:29.442936Z",
       "resist_count": 29,
       "onboarding_completed": false,
       "goal_type": "quit",
@@ -71,6 +71,81 @@
           "mode": "distraction_task",
           "helped": true,
           "at": "2026-04-14T07:22:07.754692+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-16T05:29:39.342069+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-04-16T05:29:39.370712+00:00"
+        },
+        {
+          "mode": "distraction_task",
+          "helped": true,
+          "at": "2026-04-16T05:29:39.400695+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-16T05:54:02.162056+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-04-16T05:54:02.204901+00:00"
+        },
+        {
+          "mode": "distraction_task",
+          "helped": true,
+          "at": "2026-04-16T05:54:02.237501+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-16T05:55:42.657782+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-04-16T05:55:42.683586+00:00"
+        },
+        {
+          "mode": "distraction_task",
+          "helped": true,
+          "at": "2026-04-16T05:55:42.715714+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-16T06:01:44.329104+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-04-16T06:01:44.358945+00:00"
+        },
+        {
+          "mode": "distraction_task",
+          "helped": true,
+          "at": "2026-04-16T06:01:44.394173+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-16T06:09:29.366772+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-04-16T06:09:29.404416+00:00"
+        },
+        {
+          "mode": "distraction_task",
+          "helped": true,
+          "at": "2026-04-16T06:09:29.442860+00:00"
         }
       ],
       "heatmap_week": [
@@ -89,8 +164,8 @@
     },
     "test_device_conflict": {
       "last_relapse_date": "2026-03-29T01:58:33.616711Z",
-      "version": 4,
-      "updated_at": "2026-04-14T07:22:07.837810Z",
+      "version": 9,
+      "updated_at": "2026-04-16T06:09:29.572386Z",
       "resist_count": 0,
       "onboarding_completed": false,
       "goal_type": "quit",
@@ -118,21 +193,27 @@
     },
     "web_bc40f98": {
       "last_relapse_date": "2026-04-08T22:40:47.888478Z",
-      "version": 7,
-      "updated_at": "2026-04-14T07:13:43.467038Z",
-      "resist_count": 1,
+      "version": 11,
+      "updated_at": "2026-04-16T05:35:53.061290Z",
+      "resist_count": 2,
       "onboarding_completed": true,
-      "goal_type": "quit",
+      "goal_type": "reduce",
       "quit_reason": "",
-      "trigger_profile": [
-        "Boredom"
-      ],
+      "trigger_profile": [],
       "milestone_days": 30,
-      "preferred_currency": "INR",
+      "preferred_currency": "auto",
       "daily_spend": 12.5,
       "daily_hours": 1.5,
-      "trigger_log": [],
-      "crave_sessions": [],
+      "trigger_log": [
+        "Stress"
+      ],
+      "crave_sessions": [
+        {
+          "mode": "breath_60s",
+          "helped": false,
+          "at": "2026-04-16T05:35:53.030000+00:00"
+        }
+      ],
       "heatmap_week": [
         2,
         4,
@@ -142,16 +223,16 @@
         0,
         3
       ],
-      "last_mood_logged_at": null,
-      "last_resist_at": "2026-04-14T07:13:43.466961Z",
+      "last_mood_logged_at": "2026-04-16T05:35:52.700695Z",
+      "last_resist_at": "2026-04-16T05:35:44.756965Z",
       "device_id": "web_bc40f98",
       "display_name": "Steady Oak #0725"
     },
     "test_device_weekly": {
       "last_relapse_date": "2026-04-14T07:22:07.780055Z",
-      "version": 3,
-      "updated_at": "2026-04-14T07:22:07.803345Z",
-      "resist_count": 1,
+      "version": 13,
+      "updated_at": "2026-04-16T06:09:29.526966Z",
+      "resist_count": 6,
       "onboarding_completed": false,
       "goal_type": "quit",
       "quit_reason": "",
@@ -166,11 +247,65 @@
           "mode": "breath_60s",
           "helped": true,
           "at": "2026-04-13T08:00:00+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-13T08:00:00+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-13T08:00:00+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-13T08:00:00+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-13T08:00:00+00:00"
+        },
+        {
+          "mode": "breath_60s",
+          "helped": true,
+          "at": "2026-04-13T08:00:00+00:00"
         }
       ],
       "heatmap_week": [
         0,
         1,
+        0,
+        4,
+        0,
+        0,
+        0
+      ],
+      "last_mood_logged_at": null,
+      "last_resist_at": "2026-04-16T06:09:29.526925Z",
+      "device_id": "test_device_weekly",
+      "display_name": "Tester"
+    },
+    "test_device_endpoint_conflict": {
+      "last_relapse_date": "2026-04-16T05:29:39.552635Z",
+      "version": 1,
+      "updated_at": "2026-04-16T05:29:39.552645Z",
+      "resist_count": 0,
+      "onboarding_completed": false,
+      "goal_type": "quit",
+      "quit_reason": "",
+      "trigger_profile": [],
+      "milestone_days": 30,
+      "preferred_currency": "auto",
+      "daily_spend": 12.5,
+      "daily_hours": 1.5,
+      "trigger_log": [],
+      "crave_sessions": [],
+      "heatmap_week": [
+        0,
+        0,
         0,
         0,
         0,
@@ -178,8 +313,8 @@
         0
       ],
       "last_mood_logged_at": null,
-      "last_resist_at": "2026-04-14T07:22:07.803293Z",
-      "device_id": "test_device_weekly",
+      "last_resist_at": null,
+      "device_id": "test_device_endpoint_conflict",
       "display_name": "Tester"
     }
   }

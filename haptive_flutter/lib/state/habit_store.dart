@@ -72,6 +72,9 @@ class HabitStore extends ChangeNotifier {
   int resistCount;
   DateTime? lastMoodLoggedAt;
   DateTime? lastResistAt;
+  bool isSyncing = false;
+  String? syncStatusMessage;
+  DateTime? lastSyncedAt;
   final List<CraveSessionEntry> _craveSessions;
   final List<String> _triggerLog;
   final List<int> _heatmapWeek;
@@ -84,6 +87,17 @@ class HabitStore extends ChangeNotifier {
 
   int get cleanDays => cleanDuration.inDays;
   int get cleanHoursRemainder => cleanDuration.inHours % 24;
+
+  void setSyncIndicator({
+    required bool syncing,
+    String? message,
+    bool markSynced = false,
+  }) {
+    isSyncing = syncing;
+    if (message != null) syncStatusMessage = message;
+    if (markSynced) lastSyncedAt = DateTime.now().toUtc();
+    notifyListeners();
+  }
 
   /// Estimated money saved based on user-configured daily spend.
   double get moneySaved =>

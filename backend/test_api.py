@@ -65,3 +65,33 @@ def test_preferences_conflict():
         json={"daily_spend": 22.0, "daily_hours": 2.0},
     )
     assert bad.status_code == 409
+
+
+def test_conflict_on_mutating_endpoints():
+    q = _q("test_device_endpoint_conflict")
+    s = client.get("/habit/state", params=q).json()
+    stale_version = s["version"] - 1 if s["version"] > 1 else 0
+
+    r_resist = client.post("/habit/resist", params={**q, "if_version": stale_version})
+    assert r_resist.status_code == 409
+
+    r_trigger = client.post(
+        "/habit/log-trigger",
+        params={**q, "if_version": stale_version},
+        json={"emotion": "Stress"},
+    )
+    assert r_trigger.status_code == 409
+
+    r_crave = client.post(
+        "/habit/crave-session",
+        params={**q, "if_version": stale_version},
+        json={"mode": "breath_60s", "helped": True},
+    )
+    assert r_crave.status_code == 409
+
+    r_relapse = client.post(
+        "/habit/relapse",
+        params={**q, "if_version": stale_version},
+        json={},
+    )
+    assert r_relapse.status_code == 409

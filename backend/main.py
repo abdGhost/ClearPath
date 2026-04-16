@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
@@ -13,6 +14,8 @@ from pydantic import BaseModel, Field, field_validator
 
 STATE_PATH = Path(__file__).resolve().parent / "habit_state.json"
 STATE_LOCK = Lock()
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+STORAGE_MODE = "postgres" if DATABASE_URL else "json"
 
 
 class HabitState(BaseModel):
@@ -180,7 +183,93 @@ def _legacy_to_device_state(device_id: str, display_name: str) -> DeviceHabitSta
     )
 
 
-def get_or_create_user(device_id: str, display_name: str | None) -> tuple[HabitDb, DeviceHabitState]:
+def _postgres_row_to_state(row: Any) -> DeviceHabitState:
+    return DeviceHabitState(
+        device_id=row.device_id,
+        display_name=row.display_name,
+        last_relapse_date=row.last_relapse_date,
+        version=row.version,
+        updated_at=row.updated_at,
+        resist_count=row.resist_count,
+        onboarding_completed=row.onboarding_completed,
+        goal_type=row.goal_type,
+        quit_reason=row.quit_reason,
+        trigger_profile=list(row.trigger_profile or []),
+        milestone_days=row.milestone_days,
+        preferred_currency=row.preferred_currency,
+        daily_spend=row.daily_spend,
+        daily_hours=row.daily_hours,
+        trigger_log=list(row.trigger_log or []),
+        crave_sessions=list(row.crave_sessions or []),
+        heatmap_week=list(row.heatmap_week or [0, 0, 0, 0, 0, 0, 0]),
+        last_mood_logged_at=row.last_mood_logged_at,
+        last_resist_at=row.last_resist_at,
+    )
+
+
+def _apply_state_to_postgres_row(row: Any, state: DeviceHabitState) -> None:
+    row.device_id = state.device_id
+    row.display_name = state.display_name
+    row.last_relapse_date = state.last_relapse_date
+    row.version = state.version
+    row.updated_at = state.updated_at
+    row.resist_count = state.resist_count
+    row.onboarding_completed = state.onboarding_completed
+    row.goal_type = state.goal_type
+    row.quit_reason = state.quit_reason
+    row.trigger_profile = list(state.trigger_profile)
+    row.trigger_log = list(state.trigger_log)
+    row.crave_sessions = list(state.crave_sessions)
+    row.milestone_days = state.milestone_days
+    row.preferred_currency = state.preferred_currency
+    row.daily_spend = state.daily_spend
+    row.daily_hours = state.daily_hours
+    row.heatmap_week = list(state.heatmap_week)
+    row.last_mood_logged_at = state.last_mood_logged_at
+    row.last_resist_at = state.last_resist_at
+
+
+def get_or_create_user(device_id: str, display_name: str | None) -> tuple[HabitDb | None, DeviceHabitState]:
+    if STORAGE_MODE == "postgres":
+        from postgres_storage import HabitUser, create_tables, session_scope
+
+        create_tables()
+        with session_scope() as session:
+            row = session.query(HabitUser).filter(HabitUser.device_id == device_id).one_or_none()
+            if row is not None:
+                if display_name and display_name.strip() and row.display_name != display_name.strip():
+                    row.display_name = display_name.strip()
+                    session.add(row)
+                session.flush()
+                return None, _postgres_row_to_state(row)
+
+            name = (display_name or "").strip() or _name_from_device_id(device_id)
+            legacy = _default_state()
+            row = HabitUser(
+                device_id=device_id,
+                display_name=name,
+                last_relapse_date=legacy.last_relapse_date,
+                version=legacy.version,
+                updated_at=legacy.updated_at,
+                resist_count=legacy.resist_count,
+                onboarding_completed=legacy.onboarding_completed,
+                goal_type=legacy.goal_type,
+                quit_reason=legacy.quit_reason,
+                trigger_profile=legacy.trigger_profile,
+                trigger_log=legacy.trigger_log,
+                crave_sessions=legacy.crave_sessions,
+                milestone_days=legacy.milestone_days,
+                preferred_currency=legacy.preferred_currency,
+                daily_spend=legacy.daily_spend,
+                daily_hours=legacy.daily_hours,
+                heatmap_week=legacy.heatmap_week,
+                last_mood_logged_at=legacy.last_mood_logged_at,
+                last_resist_at=legacy.last_resist_at,
+            )
+            session.add(row)
+            session.flush()
+            return None, _postgres_row_to_state(row)
+
     db = load_db()
     user = db.users.get(device_id)
     if user is not None:
@@ -225,12 +314,37 @@ def get_or_create_user(device_id: str, display_name: str | None) -> tuple[HabitD
     return db, user
 
 
-def persist_user(db: HabitDb, device_id: str, state: DeviceHabitState) -> DeviceHabitState:
+def persist_user(db: HabitDb | None, device_id: str, state: DeviceHabitState) -> DeviceHabitState:
     state.version = max(1, state.version + 1)
     state.updated_at = datetime.now(timezone.utc)
+    if STORAGE_MODE == "postgres":
+        from postgres_storage import HabitUser, create_tables, session_scope
+
+        create_tables()
+        with session_scope() as session:
+            row = session.query(HabitUser).filter(HabitUser.device_id == device_id).one_or_none()
+            if row is None:
+                row = HabitUser(device_id=device_id, display_name=state.display_name, last_relapse_date=state.last_relapse_date)
+            _apply_state_to_postgres_row(row, state)
+            session.add(row)
+            session.flush()
+        return state
+
+    if db is None:
+        raise RuntimeError("JSON storage requires HabitDb instance")
     db.users[device_id] = state
     save_db(db)
     return state
+
+
+def assert_expected_version(state: DeviceHabitState, if_version: int | None) -> None:
+    if if_version is None:
+        return
+    if if_version != state.version:
+        raise HTTPException(
+            status_code=409,
+            detail=f"version mismatch (expected {state.version}, got {if_version})",
+        )
 
 
 def build_summary(s: DeviceHabitState) -> HabitSummary:
@@ -310,7 +424,7 @@ app.add_middleware(
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "ok", "storage": STORAGE_MODE}
 
 
 @app.get("/habit/state")
@@ -338,8 +452,13 @@ def get_weekly_activity(device_id: str, display_name: str | None = None) -> Week
 
 
 @app.post("/habit/resist")
-def resist(device_id: str, display_name: str | None = None) -> DeviceHabitState:
+def resist(
+    device_id: str,
+    display_name: str | None = None,
+    if_version: int | None = Query(default=None),
+) -> DeviceHabitState:
     db, s = get_or_create_user(device_id=device_id, display_name=display_name)
+    assert_expected_version(s, if_version)
     now = datetime.now(timezone.utc)
     s.resist_count += 1
     s.last_resist_at = now
@@ -350,16 +469,28 @@ def resist(device_id: str, display_name: str | None = None) -> DeviceHabitState:
 
 
 @app.post("/habit/log-trigger")
-def log_trigger(body: TriggerBody, device_id: str, display_name: str | None = None) -> DeviceHabitState:
+def log_trigger(
+    body: TriggerBody,
+    device_id: str,
+    display_name: str | None = None,
+    if_version: int | None = Query(default=None),
+) -> DeviceHabitState:
     db, s = get_or_create_user(device_id=device_id, display_name=display_name)
+    assert_expected_version(s, if_version)
     s.trigger_log.append(body.emotion)
     s.last_mood_logged_at = datetime.now(timezone.utc)
     return persist_user(db, device_id, s)
 
 
 @app.post("/habit/crave-session")
-def crave_session(body: CraveSessionBody, device_id: str, display_name: str | None = None) -> DeviceHabitState:
+def crave_session(
+    body: CraveSessionBody,
+    device_id: str,
+    display_name: str | None = None,
+    if_version: int | None = Query(default=None),
+) -> DeviceHabitState:
     db, s = get_or_create_user(device_id=device_id, display_name=display_name)
+    assert_expected_version(s, if_version)
     s.crave_sessions.append(
         {
             "mode": body.mode,
@@ -371,10 +502,16 @@ def crave_session(body: CraveSessionBody, device_id: str, display_name: str | No
 
 
 @app.post("/habit/relapse")
-def relapse(body: RelapseBody | None = None, device_id: str = "", display_name: str | None = None) -> DeviceHabitState:
+def relapse(
+    body: RelapseBody | None = None,
+    device_id: str = "",
+    display_name: str | None = None,
+    if_version: int | None = Query(default=None),
+) -> DeviceHabitState:
     if not device_id.strip():
         raise HTTPException(status_code=422, detail="device_id is required")
     db, s = get_or_create_user(device_id=device_id, display_name=display_name)
+    assert_expected_version(s, if_version)
     s.last_relapse_date = body.at if body and body.at else datetime.now(timezone.utc)
     return persist_user(db, device_id, s)
 
@@ -387,11 +524,7 @@ def update_preferences(
     if_version: int | None = Query(default=None),
 ) -> DeviceHabitState:
     db, s = get_or_create_user(device_id=device_id, display_name=display_name)
-    if if_version is not None and if_version != s.version:
-        raise HTTPException(
-            status_code=409,
-            detail=f"version mismatch (expected {s.version}, got {if_version})",
-        )
+    assert_expected_version(s, if_version)
     if body.onboarding_completed is not None:
         s.onboarding_completed = body.onboarding_completed
     if body.goal_type is not None and body.goal_type.strip():
