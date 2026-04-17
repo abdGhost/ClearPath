@@ -245,135 +245,153 @@ class _InterventionOverlayState extends State<InterventionOverlay>
                   ),
                   const SizedBox(height: 10),
                   Expanded(
-                    child: Center(
-                      child: AnimatedBuilder(
-                        animation: _breath,
-                        builder: (context, _) {
-                          final v = _breath.value;
-                          final inhaling =
-                              _breath.status == AnimationStatus.forward;
-                          final scale = 0.82 + 0.24 * v;
-                          var countdown = inhaling
-                              ? ((1.0 - v) * 4).ceil()
-                              : (v * 4).ceil();
-                          if (countdown < 1) countdown = 1;
-                          if (countdown > 4) countdown = 4;
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final maxRingSize = math.min(
+                          constraints.maxWidth,
+                          constraints.maxHeight,
+                        );
+                        final ringSize = maxRingSize.clamp(180.0, 280.0);
+                        final scaleFactor = ringSize / 280.0;
 
-                          return SizedBox(
-                            width: 280,
-                            height: 280,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Transform.rotate(
-                                  angle: -math.pi / 2,
-                                  child: SizedBox(
-                                    width: 276,
-                                    height: 276,
-                                    child: CircularProgressIndicator(
-                                      value: v,
-                                      strokeWidth: 5,
-                                      strokeCap: StrokeCap.round,
-                                      backgroundColor: Colors.white
-                                          .withValues(alpha: 0.08),
-                                      color: HaptiveColors.progress,
-                                    ),
-                                  ),
-                                ),
-                                Transform.scale(
-                                  scale: scale,
-                                  child: Container(
-                                    width: 220,
-                                    height: 220,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: HaptiveColors.progress
-                                              .withValues(
-                                            alpha: 0.18 + v * 0.18,
-                                          ),
-                                          blurRadius: 40,
-                                          spreadRadius: 2,
-                                        ),
-                                        BoxShadow(
-                                          color: HaptiveColors.clean
-                                              .withValues(alpha: 0.07),
-                                          blurRadius: 28,
-                                        ),
-                                      ],
-                                    ),
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: HaptiveColors.progress
-                                              .withValues(
-                                            alpha: 0.72 + v * 0.2,
-                                          ),
-                                          width: 3,
-                                        ),
-                                        gradient: RadialGradient(
-                                          colors: [
-                                            Colors.white
-                                                .withValues(alpha: 0.07),
-                                            Colors.transparent,
-                                          ],
-                                          stops: const [0.35, 1],
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              '$countdown',
-                                              style: text.displayLarge
-                                                  ?.copyWith(
-                                                fontSize: 44,
-                                                fontWeight: FontWeight.w800,
-                                                color: HaptiveColors.clean,
-                                                letterSpacing: -1.5,
-                                                height: 1,
-                                                fontFeatures: const [
-                                                  FontFeature.tabularFigures(),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              inhaling ? 'Inhale' : 'Exhale',
-                                              style:
-                                                  text.titleSmall?.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w800,
-                                                fontSize: 20,
-                                                letterSpacing: -0.3,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              inhaling
-                                                  ? 'Nose · belly expands'
-                                                  : 'Mouth · let it go',
-                                              style:
-                                                  text.labelSmall?.copyWith(
-                                                color: HaptiveColors.label,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ],
+                        return Center(
+                          child: AnimatedBuilder(
+                            animation: _breath,
+                            builder: (context, _) {
+                              final v = _breath.value;
+                              final inhaling =
+                                  _breath.status == AnimationStatus.forward;
+                              final scale = 0.82 + 0.24 * v;
+                              var countdown = inhaling
+                                  ? ((1.0 - v) * 4).ceil()
+                                  : (v * 4).ceil();
+                              if (countdown < 1) countdown = 1;
+                              if (countdown > 4) countdown = 4;
+
+                              return SizedBox(
+                                width: ringSize,
+                                height: ringSize,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Transform.rotate(
+                                      angle: -math.pi / 2,
+                                      child: SizedBox(
+                                        width: ringSize * 0.985,
+                                        height: ringSize * 0.985,
+                                        child: CircularProgressIndicator(
+                                          value: v,
+                                          strokeWidth: 5 * scaleFactor,
+                                          strokeCap: StrokeCap.round,
+                                          backgroundColor: Colors.white
+                                              .withValues(alpha: 0.08),
+                                          color: HaptiveColors.progress,
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    Transform.scale(
+                                      scale: scale,
+                                      child: Container(
+                                        width: ringSize * 0.79,
+                                        height: ringSize * 0.79,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: HaptiveColors.progress
+                                                  .withValues(
+                                                alpha: 0.18 + v * 0.18,
+                                              ),
+                                              blurRadius: 40 * scaleFactor,
+                                              spreadRadius: 2 * scaleFactor,
+                                            ),
+                                            BoxShadow(
+                                              color: HaptiveColors.clean
+                                                  .withValues(alpha: 0.07),
+                                              blurRadius: 28 * scaleFactor,
+                                            ),
+                                          ],
+                                        ),
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: HaptiveColors.progress
+                                                  .withValues(
+                                                alpha: 0.72 + v * 0.2,
+                                              ),
+                                              width: 3 * scaleFactor,
+                                            ),
+                                            gradient: RadialGradient(
+                                              colors: [
+                                                Colors.white
+                                                    .withValues(alpha: 0.07),
+                                                Colors.transparent,
+                                              ],
+                                              stops: const [0.35, 1],
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  '$countdown',
+                                                  style: text.displayLarge
+                                                      ?.copyWith(
+                                                    fontSize: 44 * scaleFactor,
+                                                    fontWeight: FontWeight.w800,
+                                                    color: HaptiveColors.clean,
+                                                    letterSpacing:
+                                                        -1.5 * scaleFactor,
+                                                    height: 1,
+                                                    fontFeatures: const [
+                                                      FontFeature
+                                                          .tabularFigures(),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 2 * scaleFactor,
+                                                ),
+                                                Text(
+                                                  inhaling ? 'Inhale' : 'Exhale',
+                                                  style: text.titleSmall
+                                                      ?.copyWith(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w800,
+                                                    fontSize: 20 * scaleFactor,
+                                                    letterSpacing:
+                                                        -0.3 * scaleFactor,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 4 * scaleFactor,
+                                                ),
+                                                Text(
+                                                  inhaling
+                                                      ? 'Nose · belly expands'
+                                                      : 'Mouth · let it go',
+                                                  style: text.labelSmall
+                                                      ?.copyWith(
+                                                    color: HaptiveColors.label,
+                                                    fontSize: 12 * scaleFactor,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                              );
+                            },
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(height: 8),
