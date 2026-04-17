@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -10,7 +9,6 @@ import 'package:provider/provider.dart';
 import '../services/habit_api.dart';
 import '../state/habit_store.dart';
 import '../theme/haptive_theme.dart';
-import '../utils/launch_external.dart';
 
 /// Full-screen overlay — breathe pacer + grounding actions (Crave control).
 class InterventionOverlay extends StatefulWidget {
@@ -380,7 +378,7 @@ class _InterventionOverlayState extends State<InterventionOverlay>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Ground yourself',
+                    'Reset your focus',
                     style: text.labelSmall?.copyWith(
                       color: HaptiveColors.label,
                       fontWeight: FontWeight.w700,
@@ -394,53 +392,45 @@ class _InterventionOverlayState extends State<InterventionOverlay>
                       final narrow = constraints.maxWidth < 360;
                       final children = [
                         _CraveActionTile(
-                          icon: LucideIcons.bookOpen,
-                          label: 'Journal',
-                          hint: 'Log boredom',
+                          icon: LucideIcons.activity,
+                          label: 'Urge surf',
+                          hint: 'Ride 10 minutes',
                           accent: HaptiveColors.clean,
                           onTap: () async {
                             _haptic();
                             await _askOutcomeAndTrack(
                               mode: _selectedMode,
-                              tagTrigger: 'Boredom',
+                              tagTrigger: 'Stress',
                             );
                           },
                         ),
                         _CraveActionTile(
-                          icon: LucideIcons.phone,
-                          label: 'Crisis line',
-                          hint: 'US · 988',
+                          icon: LucideIcons.sparkles,
+                          label: '5-4-3-2-1',
+                          hint: 'Use your senses',
                           accent: HaptiveColors.progress,
                           onTap: () async {
                             _haptic();
-                            final launched = await launchExternalUri(
-                              Uri.parse('tel:988'),
+                            _snack(
+                              context,
+                              'Try 5 things you see, 4 feel, 3 hear, 2 smell, 1 taste.',
                             );
-                            if (!context.mounted) return;
-                            if (!launched || kIsWeb) {
-                              _snack(
-                                context,
-                                'If you need help now, call 988 (US) or your local crisis number.',
-                              );
-                            } else {
-                              _snack(context, 'Opening phone to 988…');
-                            }
                             await _askOutcomeAndTrack(
-                              mode: 'call_buddy',
+                              mode: _selectedMode,
                               tagTrigger: 'Social',
                             );
                           },
                         ),
                         _CraveActionTile(
-                          icon: LucideIcons.gamepad2,
-                          label: 'Distraction',
-                          hint: 'Log stress',
+                          icon: LucideIcons.target,
+                          label: '10-min walk',
+                          hint: 'Move your body',
                           accent: const Color(0xFFC084FC),
                           onTap: () async {
                             _haptic();
                             await _askOutcomeAndTrack(
                               mode: _selectedMode,
-                              tagTrigger: 'Stress',
+                              tagTrigger: 'Boredom',
                             );
                           },
                         ),
